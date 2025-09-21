@@ -1,0 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: url('img/cursor.png'), pointer;
+  }
+  
+  .result-container {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Fundo branco semitransparente */
+    border: 8px solid #000;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 600px;
+    cursor: url('img/cursor.png'), pointer;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 8px solid #000;
+    border-radius: 12px;
+    transition: background-color 0.3s;
+    cursor: url('img/cursor2.png'), pointer;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Estilos específicos para a página de vitória */
+  .win {
+    background-image: url('https://media1.tenor.com/m/I0OSks9ErZwAAAAC/happy-dance-happy-smiley.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* Estilos específicos para a página de perda */
+  .lose {
+    background-image: url('https://media1.tenor.com/m/ex1OyDZfD6oAAAAC/4isnothere.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }  

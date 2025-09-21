@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu de Jogo - Estilo Roblox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Luckiest Guy', Arial;
+    font-size: 190%;
+    cursor: url('img/cursor.png'), auto;
+}
+
+body {
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('img/fundo.webp');
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    transform: scale(1.1);
+    z-index: -2;
+}
+
+.background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 50, 100, 0.5));
+    z-index: -1;
+}
+
+.page-title {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 150, 255, 0.8);
+    font-size: 3rem;
+    letter-spacing: 2px;
+    z-index: 2;
+}
+
+.container {
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    z-index: 1;
+    margin-top: 60px; /* Espaço para o título */
+}
+
+.logo {
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.logo p {
+    font-size: 1.2rem; /* Tamanho menor de fonte, igual ao footer */
+    opacity: 0.8;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7); /* Cor cinza translúcida igual ao footer */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Sombra de texto igual ao footer */
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.btn {
+    padding: 18px 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 8px solid #000;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, #2c70d6, #1a4fa0);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: block;
+    cursor: url('img/cursor2.png'), pointer;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(145deg, #3a80ee, #2c70d6);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* Botão verde */
+.btn-jogar {
+    background: linear-gradient(145deg, #39e329, #27a01b);
+}
+
+.btn-jogar:hover {
+    background: linear-gradient(145deg, #44ff32, #32c224);
+}
+
+/* Botão laranja */
+.btn-memes {
+    background: linear-gradient(145deg, #ff7b25, #d45a12);
+}
+
+.btn-memes:hover {
+    background: linear-gradient(145deg, #ff8e43, #e46d28);
+}
+
+/* Botão roxo */
+.btn-placar {
+    background: linear-gradient(145deg, #c425ff, #9215c7);
+}
+
+.btn-placar:hover {
+    background: linear-gradient(145deg, #d24aff, #a728db);
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    padding: 0 20px;
+}
+/* Estilo para links dentro do footer */
+.footer a {
+    color: rgba(255, 255, 255, 1); /* Cor ligeiramente mais clara que o texto normal */
+    text-decoration: none; /* Remove o sublinhado padrão */
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    font-size: 0.9rem; /* Mesmo tamanho do texto do footer */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Sombra de texto igual ao footer */
+}
+
+.footer a:hover {
+    color: rgba(255, 255, 255, 1); /* Cor branca sólida no hover */
+    text-shadow: 0 0 8px rgba(0, 150, 255, 0.8); /* Sombra azul no hover */
+}
+
+/* Link do itch.io */
+.itch-link {
+    position: absolute;
+    bottom: 100px; /* Posicionado acima do footer */
+    right: 20px;
+    z-index: 10;
+    transition: all 0.3s ease;
+    border: 8px solid #000;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #ff7b25, #d45a12);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.itch-link img {
+    width: 60px;
+    height: auto;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.7));
+    transition: transform 0.3s ease;
+}
+
+.itch-link:hover {
+    transform: translateY(-3px) scale(1.1);
+    background: linear-gradient(145deg, #ff8e43, #e46d28);
+}
+
+.itch-link:active {
+    transform: translateY(1px) scale(1);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2.2rem;
+        top: 20%; /* Posiciona a 30% do topo na versão mobile */
+        transform: translateY(-50%); /* Centraliza verticalmente no ponto */
+        white-space: nowrap;
+        position: absolute; /* Mantém posicionamento absoluto */
+    }
+    
+    .container {
+        margin-top: 0; /* Remove a margem superior no mobile */
+        position: absolute;
+        top: 45%; /* Posiciona o container abaixo delo título */
+        transform: translateY(-50%);
+        width: 90%;
+    }
+    
+    .logo p {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 16px 24px;
+        font-size: 1rem;
+        border-width: 3px;
+    }
+    
+    .footer {
+        font-size: 0.8rem;
+        bottom: 15px;
+    }
+    
+    /* Ajuste para o link do itch.io em tablets */
+    .itch-link {
+        bottom: 80px;
+        right: 15px;
+        border-width: 6px;
+    }
+    
+    .itch-link img {
+        width: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.8rem;
+        top: 20%; /* Mantém a 30% do topo em telas menores */
+        transform: translateY(-50%);
+        white-space: normal;
+        line-height: 1.2;
+        padding: 0 10px;
+    }
+    
+    .container {
+        top: 50%; /* Ajusta a posição do container */
+    }
+    
+    .logo p {
+        font-size: 1rem;
+    }
+
+    .btn {
+        padding: 14px 20px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        border-width: 6px;
+    }
+    
+    .footer {
+        font-size: 0.7rem;
+        bottom: 15px;
+    }
+    
+    /* Ajuste para o link do itch.io em mobile */
+    .itch-link {
+        bottom: 70px; /* Posicionado acima do footer */
+        right: 10px;
+        border-width: 5px;
+        padding: 4px;
+    }
+    
+    .itch-link img {
+        width: 40px;
+    }
+    
+    .itch-link:hover {
+        transform: translateY(-3px) scale(1.08);
+    }
+}
+
+@media (max-width: 350px) {
+    .page-title {
+        font-size: 1.5rem;
+        top: 20%; /* Mantém a 30% do topo em telas muito pequenas */
+    }
+    
+    .container {
+        top: 55%; /* Ajusta para telas muito pequenas */
+    }
+    
+    .logo p {
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        padding: 12px 16px;
+        font-size: 0.8rem;
+        border-width: 5px;
+    }
+    
+    .footer {
+        font-size: 0.6rem;
+        bottom: 12px;
+    }
+    
+    /* Ajuste para o link do itch.io em telas muito pequenas */
+    .itch-link {
+        bottom: 60px;
+        right: 8px;
+        border-width: 4px;
+        padding: 3px;
+    }
+    
+    .itch-link img {
+        width: 35px;
+    }
+    
+    .itch-link:hover {
+        transform: translateY(-3px) scale(1.05);
+    }
+}
+
+/* Define overflow x e y como hidden para todos os elementos */
+* {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+    </style>
+</head>
+<body>
+    <div class="background" id="blurredBackground"></div>
+    
+    <!-- Novo título na parte superior -->
+    <div class="page-title">OUÇA UM MEME</div>
+    
+    <div class="container">
+        <div class="logo">
+            <!-- Removido o h1 e mantido apenas o p -->
+            <p>Adivinhe o meme correto pelo som</p>
+        </div>
+        
+        <div class="buttons">
+            <a href="jogo.html" class="btn btn-jogar">Jogar</a>
+            <a href="memes.html" class="btn btn-memes">Galeria de memes</a>
+            <a href="placar.html" class="btn btn-placar">Placar</a>
+        </div>
+    </div>
+    
+    <!-- Link do itch.io -->
+    <a href="https://itevee.itch.io/" class="itch-link" target="_blank">
+        <img src="img/itch.png" alt="Visite nossa página no itch.io">
+    </a>
+    
+    <!-- Footer -->
+    <div class="footer">
+        gifs retirados de <a href="https://tenor.com/">tennor</a> e efeitos sonoros de <a href="https://www.myinstants.com/">myinstants</a>
+    </div>
+
+    <script>
+        // Efeito de movimento no fundo
+        document.addEventListener('mousemove', (e) => {
+            const background = document.getElementById('blurredBackground');
+            const x = (e.clientX / window.innerWidth) * 20;
+            const y = (e.clientY / window.innerHeight) * 20;
+            
+            background.style.transform = `scale(1.1) translate(${x/2}px, ${y/2}px)`;
+        });
+
+        // Efeitos de interação nos botões
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Efeito de clique
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

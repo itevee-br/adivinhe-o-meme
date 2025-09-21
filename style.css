@@ -1,0 +1,176 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Luckiest Guy', Arial;
+    font-size: 30px;
+    cursor: url('img/cursor.png'), auto;
+}
+
+html, body {
+    height: 100%;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+body {
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* HEADER - aumentada 5% */
+.header {
+    flex: 1.05;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    text-align: center; /* centraliza texto */
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: #333;
+}
+
+.header p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* MEMES - 80% */
+.meme-area {
+    flex: 8;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    padding: 20px;
+}
+
+.image {
+    flex: 1;
+    width: 25vw;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 5px solid #000;
+    box-shadow: 0 0 0 3px #000;
+    cursor: url('img/cursor2.png'), pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.image img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 0 3px #000;
+}
+
+/* FOOTER - atualizado */
+.footer {
+    flex: 1.5;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer button {
+    padding: 14px 28px;          /* maior tamanho do botão */
+    font-size: 18px;             /* fonte maior */
+    background-color: #007bff;
+    color: white;
+    border: 4px solid #000;      /* borda preta estilo cartoon */
+    border-radius: 8px;
+    cursor: url('img/cursor2.png'), pointer;
+    margin-bottom: 6px;
+    box-shadow: 
+        0 0 0 3px #000,         /* contorno extra para estilo cartoon */
+        0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.footer button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);     /* efeito sutil de hover */
+}
+
+#level {
+  display: flex;
+  justify-content: center; /* centraliza as estrelas */
+  gap: 5px; /* espaçamento entre as estrelas */
+  flex-wrap: nowrap; /* evita quebra de linha */
+}
+
+#level img {
+  width: 40px;  /* tamanho padrão da estrela */
+  height: 40px;
+}
+
+@media (max-width: 600px) {
+  #level img {
+    width: 25px;  /* reduz o tamanho no mobile */
+    height: 25px;
+  }
+}
+
+
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .images {
+        flex-direction: column; /* imagens empilhadas */
+        gap: 15px;
+    }
+
+    .image {
+        width: 50vw;  /* menor para caber todas */
+        height: 50vw; /* mantém proporção quadrada */
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .header p {
+        font-size: 0.9rem;
+    }
+
+    .image {
+        width: 40vw;  /* menor ainda para caber na tela */
+        height: 40vw;
+    }
+}

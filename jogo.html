@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adivinhe o Meme Pelo Som</title>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- TÍTULO (10%) -->
+    <div class="header">
+      <h1>OUÇA UM MEME</h1>
+      <!-- Substitua o parágrafo do nível por este -->
+      <div id="level">
+        <!-- As 10 estrelas serão inseridas pelo JS -->
+      </div>
+    </div>
+
+    <!-- MEMES (60%) -->
+    <div class="meme-area">
+      <div class="images" id="images-container">
+        <!-- As imagens serão inseridas via JavaScript -->
+      </div>
+    </div>
+
+    <!-- ÁUDIO E RESULTADO (30%) -->
+    <div class="footer">
+      <button class="play-button" id="play-button">Tocar Som</button>
+      <audio id="sound"></audio>
+    </div>
+  </div>
+
+  <script>
+    // Quando a página carregar, iniciar o cronômetro
+    let startTime;
+
+    window.addEventListener('load', () => {
+      startTime = Date.now(); // marca o momento inicial
+      localStorage.setItem('startTime', startTime); // salva no localStorage
+    });
+
+    // Banco de dados de memes (imagem e som)
+    const memes = [
+      {
+        image: "img/brain.gif",
+        sound: "sounds/brain.mp3",
+        name: "Cérebro Expandindo"
+      },
+      {
+        image: "img/goku_drip.gif",
+        sound: "sounds/goku_drip.mp3",
+        name: "Goku Drip"
+      },
+      {
+        image: "img/indo_ali.gif",
+        sound: "sounds/indo_ali.mp3",
+        name: "indo ali"
+      },
+      {
+        image: "img/among_reveal.gif",
+        sound: "sounds/among_reveal.mp3",
+        name: "among_reveal"
+      },
+      {
+        image: "img/golem.gif",
+        sound: "sounds/golem.mp3",
+        name: "golem sorrateiro"
+      },
+      {
+        image: "img/asgore.gif",
+        sound: "sounds/asgore.mp3",
+        name: "eu vou dirigir"
+      },
+      {
+        image: "img/aura.gif",
+        sound: "sounds/aura.mp3",
+        name: "farmar aura"
+      },
+      {
+        image: "img/cara_tranquilo.gif",
+        sound: "sounds/cara_tranquilo.mp3",
+        name: "cara tranquilo"
+      },
+      {
+        image: "img/tempo.gif",
+        sound: "sounds/tempo.mp3",
+        name: "é tudo uma questão de tempo"
+      }
+    ];
+
+    // Variáveis do jogo
+    let currentLevel = 1;
+    let maxLevels = 10;
+    let currentMeme = null;
+    let usedMemes = [];
+
+    // Elementos do DOM
+    const levelElement = document.getElementById('level');
+    const imagesContainer = document.getElementById('images-container');
+    const playButton = document.getElementById('play-button');
+    const soundElement = document.getElementById('sound');
+
+    // Inicializar o jogo
+    function initGame() {
+      updateLevelDisplay();
+      loadNewLevel();
+      
+      // Configurar o botão de tocar som
+      playButton.addEventListener('click', () => {
+        playSound();
+      });
+    }
+
+    // Atualizar o display do nível
+    function updateLevelDisplay() {
+      // Limpar estrelas anteriores
+      levelElement.innerHTML = '';
+
+      for (let i = 1; i <= maxLevels; i++) {
+        const star = document.createElement('img');
+        if (i <= currentLevel - 1) { 
+          // Só ficam amarelas as estrelas de níveis já concluídos
+          star.src = 'img/star.png'; // estrela amarela
+        } else {
+          star.src = 'img/star_black.png'; // estrela preta
+        }
+        levelElement.appendChild(star);
+      }
+    }
+
+
+    // Carregar novo nível
+    function loadNewLevel() {
+      // Limpar container de imagens
+      imagesContainer.innerHTML = '';
+      
+      // Escolher um meme aleatório que ainda não foi usado
+      let availableMemes = memes.filter(meme => !usedMemes.includes(meme));
+      
+      if (availableMemes.length === 0) {
+        // Se todos os memes foram usados, reiniciar a lista
+        usedMemes = [];
+        availableMemes = [...memes];
+      }
+      
+      const randomIndex = Math.floor(Math.random() * availableMemes.length);
+      currentMeme = availableMemes[randomIndex];
+      usedMemes.push(currentMeme);
+      
+      // Configurar o áudio
+      soundElement.src = currentMeme.sound;
+      
+      // Criar array de opções (1 correta + 2 aleatórias)
+      let options = [currentMeme];
+      
+      // Adicionar duas opções erradas aleatórias
+      while (options.length < 3) {
+        const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+        if (!options.includes(randomMeme) && randomMeme !== currentMeme) {
+          options.push(randomMeme);
+        }
+      }
+      
+      // Embaralhar as opções
+      options = shuffleArray(options);
+      
+      // Adicionar as imagens ao container
+      options.forEach(meme => {
+        const imageLink = document.createElement('a');
+        imageLink.className = 'image';
+        imageLink.href = '#';
+        
+        const image = document.createElement('img');
+        image.src = meme.image;
+        image.alt = meme.name;
+        
+        imageLink.appendChild(image);
+        
+        // Adicionar evento de clique
+        imageLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          checkAnswer(meme);
+        });
+        
+        imagesContainer.appendChild(imageLink);
+      });
+    }
+
+    // Embaralhar array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Tocar o som do meme
+    function playSound() {
+      soundElement.currentTime = 0;
+      soundElement.play();
+    }
+
+    // Verificar a resposta
+    function checkAnswer(selectedMeme) {
+      if (selectedMeme === currentMeme) {
+        // Tocar som de correto
+        const correctSound = new Audio('sounds/certo.mp3');
+        correctSound.play();
+
+        // Resposta correta
+        if (currentLevel < maxLevels) {
+          currentLevel++;
+          updateLevelDisplay();
+          loadNewLevel();
+        } else {
+          // Vitória - todos os níveis completados
+          window.location.href = 'win.html';
+        }
+      } else {
+        // Resposta errada
+        window.location.href = 'lose.html';
+      }
+    }
+
+    // Iniciar o jogo quando a página carregar
+    window.addEventListener('load', initGame);
+  </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Você Ganhou!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Luckiest Guy', Arial, cursive;
+      cursor: url('img/cursor.png'), auto;
+    }
+    
+    body {
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('img/tralalelo.gif');
+      background-size: cover;
+      background-position: center;
+      filter: blur(4px);
+      transform: scale(1.1);
+      z-index: -2;
+    }
+    
+    .background::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 50, 100, 0.5));
+      z-index: -1;
+    }
+    
+    .page-title {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: white;
+      text-shadow: 0 0 10px rgba(0, 150, 255, 0.8);
+      font-size: 3rem;
+      letter-spacing: 2px;
+      z-index: 2;
+    }
+    
+    .result-container {
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      z-index: 1;
+      margin-top: 60px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 6px solid #000;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+    }
+    
+    #time-text {
+      font-size: 1.5rem;
+      color: #e74c3c;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+    }
+    
+    p {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+    
+    input[type="text"] {
+      padding: 15px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      border: 3px solid #000;
+      margin-top: 15px;
+      width: 80%;
+      cursor: url('img/cursor2.png'), pointer;
+    }
+    
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .btn, .submit-btn {
+      padding: 18px 30px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: 5px solid #000;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      display: block;
+      cursor: url('img/cursor2.png'), pointer;
+      text-shadow: 2px 2px 0 #000;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(145deg, #39e329, #27a01b);
+    }
+    
+    .submit-btn:hover {
+      background: linear-gradient(145deg, #44ff32, #32c224);
+      transform: translateY(-5px);
+    }
+    
+    .btn {
+      background: linear-gradient(145deg, #2c70d6, #1a4fa0);
+    }
+    
+    .btn:hover {
+      background: linear-gradient(145deg, #3a80ee, #2c70d6);
+      transform: translateY(-5px);
+    }
+    
+    .btn::before, .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover::before, .submit-btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:active, .submit-btn:active {
+      transform: translateY(1px);
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      font-size: 1rem;
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(231, 76, 60, 0.1);
+      border-radius: 8px;
+      border: 2px solid #e74c3c;
+    }
+    
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      opacity: 0.8;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      padding: 0 20px;
+    }
+    
+    .ranking-section {
+      transition: all 0.3s ease;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2.2rem;
+        top: 5%;
+      }
+      
+      .result-container {
+        margin-top: 70px;
+        width: 95%;
+        padding: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      #time-text {
+        font-size: 1.3rem;
+      }
+      
+      p {
+        font-size: 1.1rem;
+      }
+      
+      .btn, .submit-btn {
+        padding: 14px 20px;
+        font-size: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 1.8rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      #time-text {
+        font-size: 1.1rem;
+      }
+      
+      input[type="text"] {
+        width: 90%;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <h1 class="page-title">VITÓRIA!</h1>
+  
+  <div class="result-container">
+    <h1>Parabéns!</h1>
+    <p id="time-text">Carregando...</p>
+    
+    <div id="ranking-section" class="ranking-section">
+      <p>Coloque seu nome abaixo para participar do ranking!</p>
+      <input type="text" id="player-name" placeholder="Seu nome aqui">
+      
+      <div class="buttons">
+        <button class="submit-btn" id="submit-btn">Enviar</button>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <a href="index.html" class="btn">Voltar para o Jogo</a>
+    </div>
+    
+    <p id="error-message" class="error-message" style="display: none;"></p>
+  </div>
+  
+  <div class="footer">
+    Desenvolvido com ❤️ | Seu tempo será registrado no ranking
+  </div>
+
+  <script>
+    // Função para inicializar o Supabase com fallback
+    async function initializeSupabase() {
+      // Tenta carregar a biblioteca de várias formas
+      let supabaseLib;
+      
+      try {
+        // Tenta acessar de diferentes maneiras
+        if (typeof window.supabase !== 'undefined') {
+          supabaseLib = window.supabase;
+        } else if (typeof supabase !== 'undefined') {
+          supabaseLib = supabase;
+        } else {
+          // Se não encontrou, tenta carregar dinamicamente
+          await loadSupabase();
+          if (typeof window.supabase !== 'undefined') {
+            supabaseLib = window.supabase;
+          } else {
+            throw new Error('Supabase não disponível');
+          }
+        }
+
+        const supabaseUrl = 'https://sukfozxdzhiwlicsqxmd.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1a2Zvenhkemhpd2xpY3NxeG1kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzY4NDQsImV4cCI6MjA3NDA1Mjg0NH0.4NMptCTv7u7bbsLMSebPMGMEl36RSKyD4RcZrPGYmi0';
+        
+        return supabaseLib.createClient(supabaseUrl, supabaseKey);
+      } catch (error) {
+        console.error('Erro ao inicializar Supabase:', error);
+        showError('Não foi possível conectar ao ranking. Você ainda pode ver seu tempo!');
+        return null;
+      }
+    }
+
+    // Função para carregar o Supabase dinamicamente
+    function loadSupabase() {
+      return new Promise((resolve, reject) => {
+        // Verifica se já está carregado
+        if (typeof window.supabase !== 'undefined') {
+          resolve();
+          return;
+        }
+
+        // Carrega o script dinamicamente
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    // Função para mostrar erro
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    // Função para esconder a seção de ranking (apenas os elementos de envio)
+    function hideRankingSection() {
+      const rankingSection = document.getElementById('ranking-section');
+      rankingSection.style.display = 'none';
+    }
+
+    // Função principal
+    async function main() {
+      // Recupera tempo primeiro (funciona mesmo sem Supabase)
+      const startTime = localStorage.getItem('startTime');
+      let elapsedSeconds = 0;
+
+      if (startTime) {
+        const endTime = Date.now();
+        elapsedSeconds = Math.floor((endTime - startTime) / 1000);
+        document.getElementById('time-text').textContent = 
+          `Parabéns! Você completou em ${elapsedSeconds} segundos!`;
+        localStorage.removeItem('startTime');
+        
+        // Verifica se o tempo é inválido (0 ou menos)
+        if (elapsedSeconds <= 0) {
+          document.getElementById('time-text').textContent = 
+            `Parabéns! Você completou o desafio!`;
+          hideRankingSection();
+        }
+      } else {
+        document.getElementById('time-text').textContent = `Não foi possível calcular o tempo.`;
+        hideRankingSection();
+      }
+
+      // Inicializa Supabase apenas se o tempo for válido
+      let supabaseClient = null;
+      if (elapsedSeconds > 0) {
+        supabaseClient = await initializeSupabase();
+      }
+
+      // Configura o botão de envio apenas se o tempo for válido
+      if (elapsedSeconds > 0) {
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', async () => {
+          const playerName = document.getElementById('player-name').value.trim();
+          if (!playerName) {
+            alert('Digite seu nome para participar do ranking!');
+            return;
+          }
+
+          if (!supabaseClient) {
+            alert('Serviço de ranking indisponível no momento. Tente novamente mais tarde.');
+            return;
+          }
+
+          try {
+            const { data, error } = await supabaseClient
+              .from('ranking')
+              .insert([{ name: playerName, seconds: elapsedSeconds }]);
+
+            if (error) {
+              console.error(error);
+              alert('Erro inesperado ao enviar seu tempo.');
+            } else {
+              console.log(`Tempo de ${playerName} (${elapsedSeconds} segundos) registrado com sucesso!`);
+              // Redireciona para o placar após o envio
+              window.location.href = 'placar.html';
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Erro inesperado ao enviar seu tempo.');
+          }
+        });
+      }
+    }
+
+    // Inicia a aplicação quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', main);
+  </script>
+</body>
+</html>
